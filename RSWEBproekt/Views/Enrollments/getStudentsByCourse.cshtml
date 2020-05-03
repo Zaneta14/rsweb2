@@ -1,0 +1,75 @@
+﻿@model IEnumerable<RSWEBproekt.Models.Enrollment>
+
+@{ 
+    ViewData["Title"] = "Enrollments";
+}
+
+<h3>Students enrolled in selected course</h3>
+
+<form asp-controller="Enrollments" asp-action="getStudentsByCourse">
+    <p>
+        Choose a year: <input type="text" name="yearInt" />
+    </p>
+</form>
+
+        <table class="table">
+            <tr>
+                <th>Student</th>
+                <th>Semester</th>
+                <th>Grade</th>
+                <th>Year</th>
+                <th>Seminal url</th>
+                <th>Project url</th>
+                <th>Exam points</th>
+                <th>Seminal points</th>
+                <th>Project points</th>
+                <th>Additional points</th>
+                <th>Finish date</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Student.FullName)
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Semestar)
+            </td>
+            <td>
+                @item.Grade
+            </td>
+            <td>
+                @item.Year
+            </td>
+            <td>
+                @item.SeminalUrl
+            </td>
+            <td>
+                @item.ProjectUrl
+            </td>
+            <td>
+                @item.ExamPoints
+            </td>
+            <td>
+                @item.SeminalPoints
+            </td>
+            <td>
+                @item.ProjectPoints
+            </td>
+            <td>
+                @item.AdditionalPoints
+            </td>
+            <td>
+                @item.FinishDate
+            </td>
+            @if (item.FinishDate != null)
+            {
+            <td>
+                <a asp-action="editByProfessor" asp-route-id="@item.EnrollmentID">Edit</a>
+            </td>
+            } 
+            </tr>
+            }
+        </table>

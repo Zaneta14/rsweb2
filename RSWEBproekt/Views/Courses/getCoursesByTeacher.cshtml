@@ -1,0 +1,138 @@
+﻿@model IEnumerable<RSWEBproekt.Models.Course>
+
+@{
+    ViewData["Title"] = "Courses";
+}
+
+<h1>Courses by selected Teacher</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Credits
+            </th>
+            <th>
+                Semestar
+            </th>
+            <th>
+                Programme
+            </th>
+            <th>
+                EducationLevel
+            </th>
+            <th>
+                First Teacher
+            </th>
+            <th>
+                Second Teacher
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Credits)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Semestar)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Programme)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EducationLevel)
+                </td>
+                <td>
+                    <a asp-controller="Teachers" asp-action="Details" asp-route-id="@item.FirstTeacherId">
+                        @Html.DisplayFor(modelItem => item.FirstTeacher.FullName)
+                    </a>
+                </td>
+                <td>
+                    <a asp-controller="Teachers" asp-action="Details" asp-route-id="@item.SecondTeacherId">
+                        @Html.DisplayFor(modelItem => item.SecondTeacher.FullName)
+                    </a>
+                </td>
+                <td>
+                    <a asp-controller="Enrollments" asp-action="getStudentsByCourse" asp-route-id="@item.CourseID">See Students</a> 
+                    @*@Html.ActionLink("Select", "getCoursesByTeacher", new { courseId = item.CourseID })*@ 
+                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@*@if (Model.Enrollments != null)
+        {
+            <h3>Students enrolled in selected course</h3>
+            <table class="table">
+                <tr>
+                    <th></th>
+                    <th>Student</th>
+                    <th>Semester</th>
+                    <th>Grade</th>
+                    <th>Year</th>
+                    <th>Seminal url</th>
+                    <th>Project url</th>
+                    <th>Exam points</th>
+                    <th>Seminal points</th>
+                    <th>Project points</th>
+                    <th>Additional points</th>
+                    <th>Finish date</th>
+                </tr>
+
+                @foreach (var item in Model.Enrollments)
+                {
+                    @*<td>
+                        @Html.ActionLink("Select", "Index", new { courseID = item.CourseID })
+                    </td>
+    <tr>
+        <td>
+            item.Student.FullName
+            @Html.DisplayFor(model => item.Student.FullName)
+
+        </td>
+        <td>
+            @item.Semestar
+        </td>
+        <td>
+            @item.Grade
+        </td>
+        <td>
+            @item.Year
+        </td>
+        <td>
+            @item.SeminalUrl
+        </td>
+        <td>
+            @item.ProjectUrl
+        </td>
+        <td>
+            @item.ExamPoints
+        </td>
+        <td>
+            @item.SeminalPoints
+        </td>
+        <td>
+            @item.ProjectPoints
+        </td>
+        <td>
+            @item.AdditionalPoints
+        </td>
+        <td>
+            @item.FinishDate
+        </td>
+    </tr>
+            }
+        </table>
+    }*@
