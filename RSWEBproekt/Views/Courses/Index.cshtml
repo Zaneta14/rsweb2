@@ -47,9 +47,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Courses[0].SecondTeacher)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Courses[0].Students)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -80,13 +77,6 @@
                 <a asp-controller="Teachers" asp-action="Details" asp-route-id="@item.SecondTeacherId">
                     @Html.DisplayFor(modelItem => item.SecondTeacher.FullName)
                     </a>
-            </td>
-            <td>
-                @foreach (var student in item.Students)
-                {
-                    <a asp-controller="Students" asp-action="Details" asp-route-id="@student.StudentID">
-                @student.Student.FullName </a> <br />
-                }
             </td>
             <td>
                 <a asp-controller="Enrollments" asp-action="enrollStudents" asp-route-id="@item.CourseID">Enroll Students</a> |

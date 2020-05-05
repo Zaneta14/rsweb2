@@ -76,7 +76,7 @@ namespace RSWEBproekt.Migrations
                     b.Property<int>("ExamPoints")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("FinishDate")
+                    b.Property<DateTime?>("FinishDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Grade")
@@ -140,6 +140,9 @@ namespace RSWEBproekt.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
@@ -177,6 +180,9 @@ namespace RSWEBproekt.Migrations
 
                     b.Property<DateTime>("HireDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()

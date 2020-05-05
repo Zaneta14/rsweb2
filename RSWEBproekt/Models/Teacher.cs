@@ -48,5 +48,7 @@ namespace RSWEBproekt.Models
         [Display(Name ="Courses")]
         public ICollection<Course> Courses1 { get; set; }
         public ICollection<Course> Courses2 { get; set; }
+        [Display(Name="Image")]
+        public string ImageUrl { get; set; }
     }
 }

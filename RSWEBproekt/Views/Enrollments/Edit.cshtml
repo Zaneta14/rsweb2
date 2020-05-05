@@ -48,7 +48,12 @@
             @Html.DisplayNameFor(model => model.SeminalUrl)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SeminalUrl)
+                @if (Model.SeminalUrl != null)
+                {
+                    <a href="@("/seminals/" + Model.SeminalUrl)" target="_blank">
+                        @Model.SeminalUrl
+                    </a>
+                }
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ProjectUrl)

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RSWEBproekt.Data;
 using RSWEBproekt.Models;
@@ -13,10 +12,12 @@ namespace RSWEBproekt.Controllers
     public class StudentsController : Controller
     {
         private readonly RSWEBproektContext _context;
+        private IWebHostEnvironment WebHostEnvironment { get; }
 
-        public StudentsController(RSWEBproektContext context)
+        public StudentsController(RSWEBproektContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            WebHostEnvironment = webHostEnvironment;
         }
 
         // GET: Students
@@ -101,12 +102,14 @@ namespace RSWEBproekt.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StudentId,FirstName,LastName,EnrollmentDate,AcquiredCredits,CurrentSemestar,EducationLevel")] Student student)
+        public async Task<IActionResult> Edit(int id, IFormFile imgUrl1, [Bind("Id,StudentId,FirstName,LastName,EnrollmentDate,AcquiredCredits,CurrentSemestar,EducationLevel")] Student student)
         {
             if (id != student.Id)
             {
                 return NotFound();
             }
+            UploadImage uploadImage = new UploadImage(WebHostEnvironment);
+            student.ImageUrl = uploadImage.UploadedFile(imgUrl1);
 
             if (ModelState.IsValid)
             {

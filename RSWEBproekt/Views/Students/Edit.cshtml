@@ -9,8 +9,8 @@
 <h4>Student</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+    <div class="col-md-4" >
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -47,6 +47,22 @@
                 <label asp-for="EducationLevel" class="control-label"></label>
                 <input asp-for="EducationLevel" class="form-control" />
                 <span asp-validation-for="EducationLevel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @if (Model.ImageUrl == null)
+                {
+                    <label class="control-label">Image</label>
+                    <input type="file" name="imgUrl1" />
+                }
+                else
+                {
+                    <label>Chosen image:</label>
+                    <img src="~/images/@Model.ImageUrl"
+                         height="100" width="100"
+                         asp-append-version="true" />
+                    <br />
+                    <input type="file" name="imgUrl1" />
+                }
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

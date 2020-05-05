@@ -74,7 +74,7 @@
 </dl>
 
 <div class="col-md-4">
-    <form asp-action="editByStudent">
+    <form asp-action="editByStudent" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="EnrollmentID" />
         <div class="form-group">
@@ -83,10 +83,26 @@
             <span asp-validation-for="ProjectUrl" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="SemUrl" class="control-label"></label>
-            <input asp-for="SemUrl" class="form-control" />
-            <label>Choose file</label>
-            <span asp-validation-for="SemUrl" class="text-danger"></span>
+            @* <label asp-for="SemUrl" class="control-label"></label>
+        <input asp-for="SemUrl" class="form-control" />
+        <label>Choose file</label>
+        <span asp-validation-for="SemUrl" class="text-danger"></span>*@
+            <label asp-for="SeminalUrl" class="control-label"></label>
+            @if (Model.SeminalUrl == null)
+            {
+                <input type="file" name="semUrl" />
+            }
+            else
+            {
+                <label>
+                    Selected file:
+                    <a href="@("/seminals/" + Model.SeminalUrl)" target="_blank">
+                        @Model.SeminalUrl
+                    </a>
+                </label>
+                <input type="file" name="semUrl" />
+            }
+
         </div>
         <div class="form-group">
             <input type="submit" value="Save" class="btn btn-primary" />
@@ -96,7 +112,8 @@
 
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Enrollments" asp-action="getCoursesByStudent"
+       asp-route-id="@Model.StudentID">Back</a>
 </div>
 
 @section Scripts {

@@ -49,5 +49,6 @@ namespace RSWEBproekt.Models
         }
 
         public ICollection<Enrollment> Courses { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

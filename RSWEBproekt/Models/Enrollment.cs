@@ -43,9 +43,5 @@ namespace RSWEBproekt.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Finish Date")]
         public DateTime? FinishDate { get; set; }
-
-        [NotMapped]
-        [Display(Name = "Seminal Url")]
-        public IFormFile SemUrl { get; set; }
     }
 }

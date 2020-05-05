@@ -12,6 +12,5 @@ namespace RSWEBproekt.ViewModels
         public Course Course { get; set; }
         public IEnumerable<int> SelectedStudents { get; set; }
         public IEnumerable<SelectListItem> StudentList { get; set; }
-        public Enrollment Enrollment { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using RSWEBproekt.Data;
 using RSWEBproekt.Models;
 using RSWEBproekt.ViewModels;
-
+using Microsoft.AspNetCore.Http;
 
 namespace RSWEBproekt.Controllers
 {
@@ -26,13 +26,37 @@ namespace RSWEBproekt.Controllers
             WebHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IActionResult> editByProfessor(int? id)
+        public async Task<IActionResult> GetStudentsByCourse(int id, int? yearInt = 0)
+        {
+            var course = _context.Course.Where(l => l.CourseID == id).FirstOrDefault();
+            ViewData["courseName"] = course.Title;
+            TempData["selectedCourse"] = id.ToString();
+            var enrollments = _context.Enrollment.Where(s => s.CourseID == id);
+            string tch = TempData["selectedTeacher"].ToString();
+            TempData.Keep();
+            ViewData["tch"] = tch;
+            enrollments = enrollments.Include(c => c.Student);
+            if (yearInt==0)
+            {
+                string yearStr= DateTime.Now.Year.ToString();
+                yearInt = Int32.Parse(yearStr);
+            }
+            enrollments = enrollments.Where(s => s.Year == yearInt);
+            ViewData["currentYear"] = yearInt;
+            return View(enrollments);
+        }
+
+        public async Task<IActionResult> EditByProfessor(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
+            string s = null;
+            if (TempData["selectedCourse"]!=null)
+                s=TempData["selectedCourse"].ToString();
+            TempData.Keep();
+            ViewData["selectedCrs"] = s;
             var enrollment = await _context.Enrollment
                 .Include(e => e.Course)
                 .Include(e => e.Student)
@@ -46,58 +70,67 @@ namespace RSWEBproekt.Controllers
 
         [HttpPost, ActionName("editByProfessor")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> editByProfessorPost(int? id)
+        public async Task<IActionResult> EditByProfessorPost(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var enrollmentToUpdate = await _context.Enrollment.FirstOrDefaultAsync(s => s.EnrollmentID == id);
-            if (await TryUpdateModelAsync<Enrollment>(
-                enrollmentToUpdate,
-                "", s => s.ExamPoints, s => s.SeminalPoints, s => s.ProjectPoints, s => s.AdditionalPoints,
-                s => s.Grade, s => s.FinishDate))
+            int crsId = 1;
+            string crs = null;
+            if (TempData["selectedCourse"]!=null)
             {
+              crs = TempData["selectedCourse"].ToString();
+              crsId = Int32.Parse(crs);
+            }
+           
+            var enrollmentToUpdate = await _context.Enrollment.FirstOrDefaultAsync(s => s.EnrollmentID == id);
+            await TryUpdateModelAsync<Enrollment>(
+                 enrollmentToUpdate,
+                 "", s => s.ExamPoints, s => s.SeminalPoints, s => s.ProjectPoints, s => s.AdditionalPoints,
+                 s => s.Grade, s => s.FinishDate);
+            
                 try
                 {
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                return RedirectToAction("getStudentsByCourse", "Enrollments", new { id = crsId });
                 }
                 catch (DbUpdateException /* ex */)
                 {
-                    //Log the error (uncomment ex variable name and write a log.)
+                    //Log the error (uncomment ex vari  able name and write a log.)
                     ModelState.AddModelError("", "Unable to save changes. " +
                         "Try again, and if the problem persists, " +
                         "see your system administrator.");
                 }
-            }
             return View(enrollmentToUpdate);
         }
 
-        private string UploadedFile(Enrollment model)
+        private string UploadedFile(IFormFile file)
         {
             string uniqueFileName = null;
-
-            if (model.SemUrl != null)
+            if (file != null)
             {
-                string uploadsFolder = Path.Combine(WebHostEnvironment.WebRootPath, "images");
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.SemUrl.FileName);
+                string uploadsFolder = Path.Combine(WebHostEnvironment.WebRootPath, "seminals");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
                 string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    model.SemUrl.CopyTo(fileStream);
+                    file.CopyTo(fileStream);
                 }
             }
             return uniqueFileName;
         }
 
-        public async Task<IActionResult> editByStudent(int? id)
+        public async Task<IActionResult> EditByStudent(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
+            string c = null;
+            if (TempData["selectedStudent"]!=null)
+                c = TempData["selectedStudent"].ToString();
+            TempData.Keep();
             var enrollment = await _context.Enrollment
                 .Include(e => e.Course)
                 .Include(e => e.Student)
@@ -111,52 +144,49 @@ namespace RSWEBproekt.Controllers
 
         [HttpPost, ActionName("editByStudent")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> editByStudentPost(int? id)
-        {
+        public async Task<IActionResult> EditByStudentPost(int? id, IFormFile semUrl)
+        { 
             if (id == null)
             {
                 return NotFound();
             }
 
-            var enrollmentToUpdate = await _context.Enrollment.FirstOrDefaultAsync(s => s.EnrollmentID == id);
-            //enrollmentToUpdate.SeminalUrl = UploadedFile(enrollmentToUpdate); //raboti projecturl
-            enrollmentToUpdate.SeminalUrl = "test";//ne raboti
-            if (await TryUpdateModelAsync<Enrollment>(
-                enrollmentToUpdate,
-                "", s => s.ProjectUrl, s=>s.SeminalUrl))
+            int stId = 1;
+            string st = null;
+            if (TempData["selectedStudent"] != null)
             {
+                st = TempData["selectedStudent"].ToString();
+                stId = Int32.Parse(st);
+            }
+
+            var enrollmentToUpdate = await _context.Enrollment.FirstOrDefaultAsync(s => s.EnrollmentID == id);
+            enrollmentToUpdate.SeminalUrl = UploadedFile(semUrl);
+            await TryUpdateModelAsync<Enrollment>(
+                enrollmentToUpdate,
+                "", s => s.ProjectUrl);
+        
                 try
                 {
-                   // enrollmentToUpdate.SeminalUrl = "test"; //raboti sose s=>s.seminalurl
-                    //enrollmentToUpdate.SeminalUrl = UploadedFile(enrollmentToUpdate); ne raboti
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("getCoursesByStudent", "Enrollments", new { id = stId } );
                 }
                 catch (DbUpdateException /* ex */)
                 {
-                    //Log the error (uncomment ex variable name and write a log.)
                     ModelState.AddModelError("", "Unable to save changes. " +
                         "Try again, and if the problem persists, " +
                         "see your system administrator.");
                 }
-            }
+            //}
             return View(enrollmentToUpdate);
         }
 
-        public async Task<IActionResult> getStudentsByCourse(int id, int? yearInt=0)
+        
+        public async Task<IActionResult> GetCoursesByStudent(int id)
         {
-            var enrollments = _context.Enrollment.Where(s => s.CourseID == id);
-            enrollments = enrollments.Include(c => c.Student);
-            if (yearInt != 0)
-            {
-                enrollments = enrollments.Where(s => s.Year == yearInt);
-            }
-            return View(enrollments);
-        }
-
-        public async Task<IActionResult> getCoursesByStudent(int studentId)
-        {
-            var enrollments = _context.Enrollment.Where(s => s.StudentID == studentId);
+            TempData["selectedStudent"] = id.ToString();
+            var student = _context.Student.Where(s => s.Id == id).First();
+            ViewData["studentName"]=student.FullName;
+            var enrollments = _context.Enrollment.Where(s => s.StudentID == id);
             enrollments = enrollments.Include(c => c.Course);
             return View(enrollments);
         }
@@ -174,7 +204,11 @@ namespace RSWEBproekt.Controllers
             {
                 return NotFound();
             }
-
+            string s = null;
+            if (TempData["selectedCourse"] != null)
+                s = TempData["selectedCourse"].ToString();
+            TempData.Keep();
+            ViewData["selectedCrs"] = s;
             var enrollment = await _context.Enrollment
                 .Include(e => e.Course)
                 .Include(e => e.Student)
@@ -213,11 +247,6 @@ namespace RSWEBproekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnrollStudents(int id, int year, string semester, EnrollmentEditViewModel viewModel)
         {
-            /*if (id != viewModel.Course.CourseID)
-            {
-                return NotFound();
-            }*/
-
             if (ModelState.IsValid)
             {
                 try
@@ -236,14 +265,7 @@ namespace RSWEBproekt.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                /*if (!CourseExists(viewModel.Course.CourseID))
-                {
-                    return NotFound();
-                }
-                else
-                {*/
                     throw;
-                //}
                 }
                 return RedirectToAction(nameof(CoursesController.Index));
             }
@@ -258,9 +280,6 @@ namespace RSWEBproekt.Controllers
             return View();
         }
 
-        // POST: Enrollments/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EnrollmentID,CourseID,StudentID,Semestar,Grade,Year,SeminalUrl,ProjectUrl,ExamPoints,SeminalPoints,ProjectPoints,AdditionalPoints,FinishDate")] Enrollment enrollment)
@@ -306,11 +325,11 @@ namespace RSWEBproekt.Controllers
                 return NotFound();
             }
             var enrollmentToUpdate = await _context.Enrollment.FirstOrDefaultAsync(s => s.EnrollmentID == id);
-            if (await TryUpdateModelAsync<Enrollment>(
+            await TryUpdateModelAsync<Enrollment>(
                 enrollmentToUpdate,
                 "",
-                s => s.FinishDate))
-            {
+                s => s.FinishDate);
+            //{
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -323,7 +342,7 @@ namespace RSWEBproekt.Controllers
                         "Try again, and if the problem persists, " +
                         "see your system administrator.");
                 }
-            }
+            //}
             return View(enrollmentToUpdate);
         }
 

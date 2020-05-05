@@ -22,6 +22,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.StudentId)
             </th>
@@ -43,9 +44,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.CurrentSemestar)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Courses)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -53,6 +51,15 @@
         @foreach (var item in Model)
         {
         <tr>
+            <td>
+                @if (item.ImageUrl != null)
+                {
+
+                    <img src="~/images/@item.ImageUrl"
+                         height="60" width="60"
+                         asp-append-version="true" />
+                }
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StudentId)
             </td>
@@ -73,14 +80,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CurrentSemestar)
-            </td>
-            <td>
-                @foreach (var course in item.Courses)
-                {
-                    <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.CourseID">
-                        @course.Course.Title
-                    </a> <br />
-                }
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

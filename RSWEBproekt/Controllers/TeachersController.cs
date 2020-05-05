@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +16,13 @@ namespace RSWEBproekt.Controllers
     public class TeachersController : Controller
     {
         private readonly RSWEBproektContext _context;
+        private IWebHostEnvironment WebHostEnvironment { get; }
 
-        public TeachersController(RSWEBproektContext context)
+        public TeachersController(RSWEBproektContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            WebHostEnvironment = webHostEnvironment;
         }
-
         // GET: Teachers
         public async Task<IActionResult> Index(string firstNameString, string lastNameString,
             string degreeString, string academicRankString)
@@ -44,7 +47,6 @@ namespace RSWEBproekt.Controllers
             {
                 teachers = teachers.Where(t => t.AcademicRank == academicRankString);
             }
-            teachers = teachers.Include(p => p.Courses1).Include(p => p.Courses2);
             var teachersFilterVM = new TeachersFilterViewModel
             {
                 Teachers=await teachers.ToListAsync(),
@@ -112,17 +114,17 @@ namespace RSWEBproekt.Controllers
             return View(teacher);
         }
 
-        // POST: Teachers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TeacherId,FirstName,LastName,Degree,AcademicRank,OfficeNumber,HireDate")] Teacher teacher)
+        public async Task<IActionResult> Edit(int id, IFormFile imgUrl, [Bind("TeacherId,FirstName,LastName,Degree,AcademicRank,OfficeNumber,HireDate")] Teacher teacher)
         {
             if (id != teacher.TeacherId)
             {
                 return NotFound();
             }
+
+            UploadImage uploadImage = new UploadImage(WebHostEnvironment);
+            teacher.ImageUrl = uploadImage.UploadedFile(imgUrl);
 
             if (ModelState.IsValid)
             {

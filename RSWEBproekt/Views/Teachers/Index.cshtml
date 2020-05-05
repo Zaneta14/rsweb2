@@ -28,6 +28,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.Teachers[0].FirstName)
             </th>
@@ -46,9 +47,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Teachers[0].HireDate)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Teachers[0].Courses1)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -57,45 +55,38 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Degree)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AcademicRank)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OfficeNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HireDate)
-            </td>
-            <td>
-                @foreach (var course in item.Courses1)
+                @if (item.ImageUrl != null)
                 {
-                    <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.CourseID">
-                        @Html.DisplayFor(modelItem => course.Title)
-                    </a>
-                    <br />
-                }
-                @foreach (var course in item.Courses2)
-                {
-                    <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.CourseID">
-                        @Html.DisplayFor(modelItem => course.Title)
-                    </a>
-                    <br />
+
+                    <img src="~/images/@item.ImageUrl"
+                         height="60" width="60"
+                         asp-append-version="true" />
                 }
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TeacherId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TeacherId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TeacherId">Delete</a>
-            </td>
-        </tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Degree)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AcademicRank)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OfficeNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HireDate)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.TeacherId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.TeacherId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.TeacherId">Delete</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
