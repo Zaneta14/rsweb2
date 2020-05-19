@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Zane\\rsweb2\\RSWEBproekt\\RSWEBproekt.csproj": {}
+    "C:\\Users\\Zane\\rswebFinal\\RSWEBproekt\\RSWEBproekt.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Zane\\rsweb2\\RSWEBproekt\\RSWEBproekt.csproj": {
+    "C:\\Users\\Zane\\rswebFinal\\RSWEBproekt\\RSWEBproekt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Zane\\rsweb2\\RSWEBproekt\\RSWEBproekt.csproj",
+        "projectUniqueName": "C:\\Users\\Zane\\rswebFinal\\RSWEBproekt\\RSWEBproekt.csproj",
         "projectName": "RSWEBproekt",
-        "projectPath": "C:\\Users\\Zane\\rsweb2\\RSWEBproekt\\RSWEBproekt.csproj",
+        "projectPath": "C:\\Users\\Zane\\rswebFinal\\RSWEBproekt\\RSWEBproekt.csproj",
         "packagesPath": "C:\\Users\\Zane\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Zane\\rsweb2\\RSWEBproekt\\obj\\",
+        "outputPath": "C:\\Users\\Zane\\rswebFinal\\RSWEBproekt\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Zane\\AppData\\Roaming\\NuGet\\NuGet.Config",

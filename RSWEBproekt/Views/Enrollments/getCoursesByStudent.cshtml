@@ -38,7 +38,14 @@
             </td>
            
             <td>
-                <a asp-action="editByStudent" asp-route-id="@item.EnrollmentID">Edit &amp; Details</a>
+                @if (item.FinishDate == null)
+                {
+                    <a asp-action="editByStudent" asp-route-id="@item.EnrollmentID">Edit &amp; Details </a>
+                }
+                else
+                {
+                    <a asp-action="editByStudent" asp-route-id="@item.EnrollmentID">Details </a>
+                }
             </td>
         </tr>
         }
